@@ -31,6 +31,7 @@ def generate_option_dictionary():
     options["Manage Applicances"] = applicance_options()
     options["People Interface"] = people_interface()
     options["Manage Security"] = security_options()
+    options["Sauna"] = sauna_options()
     return options
 
 def main_menu_options():
@@ -73,6 +74,15 @@ def security_options():
     options["Q"] = "Quit"
     return options
 
+def sauna_options():
+    options = {}
+    options["name"] = "Sauna"
+    options["1"] = "Get temperature"
+    options["2"] = "Start heating"
+    options["X"] = "Up"
+    options["Q"] = "Quit"
+    return options
+
 def quit():
     print "Exiting. Bye bye!"
     exit(0)
@@ -90,13 +100,12 @@ def print_breadcrumb(option_stack):
 def read_input(name):
     while True:
         print ""
-        selection = str(raw_input("Select your action\n"))
+        selection = str(raw_input("Select your action\n")).upper()
         if (selection in options[name]):
             selection = options[name][selection]
             print "Selected: " + selection
             if (selection in functions):
                 functions[selection]()
-            print options
             return selection
         else:
             print "No option " + selection + " available. Choose something else"
@@ -124,3 +133,5 @@ def main():
         print_options(option_stack[-1])
 
 main()
+
+# Add status method
