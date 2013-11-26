@@ -20,7 +20,11 @@ class House:
         
         # Butler for buss time table search
         self.butler = ["Next 102 -> 11:00 am", "Next 102 -> 12:00 am","Next 102 -> 13:00 am"]              
-        
+
+        #security
+        self.alarm = False
+        self.doorsLocked = False
+
     def getButler(self):
         randomInt = randint(0,2)
         return self.butler[randomInt]
@@ -54,17 +58,54 @@ class House:
         self.account.inHouse = True
         return self.people
     
-    def AccountInHouse(self):    
+    def AccountInHouse(self):
         return self.account.inHouse
         
-    
-    
-    
-    
-account = Account('Teemu','salasana')
-house = House(account)
-print house.getPeople()
-print house.getTemperature(1)
-print house.getButler()
-print house.AccountInHouse()
+    def flipCoin(self):
+        randomInt =  randint(0,1)
+        if randomInt == 0:
+            return True
+        else:
+            return False
+
+    def isThere(self, item):
+        result = self.flipCoin()
+        if result == True:
+            return True
+        else:
+            return False
+
+    def switchAlarmState(self, password):
+        if (self.account.password == password):
+            if self.alarm == False:
+                self.alarm = True
+                return 'Alarm is now on'
+            else:
+                self.alarm = False
+                return 'Alarm is now off'
+        else:
+            return 'Incorrect password'
+
+    def switchDoorState(self):
+         if (self.doorsLocked == False):
+            self.doorsLocked = True
+            return 'Doors are now locked'
+         else:
+            self.doorsLocked = False
+            return 'Doors are now unlocked'
+
+    def getWeather(self):
+        return 'Its raining'
+
+    def getJoke(self):
+        return 'I told my dad to embrace his mistakes.\nHe cried. Then he hugged my sister and me.'
+
+
+#account = Account('Teemu','salasana')
+#house = House(account)
+#print house.getPeople()
+#print house.getTemperature(1)
+#print house.getButler()
+#print house.AccountInHouse()
+#print house.getJoke()
 
