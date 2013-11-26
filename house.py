@@ -16,7 +16,7 @@ class House:
         self.people = ['Matti','Tappo','Kalle']  
         
         #temperature monitoring     
-        self.temp = {'sauna':90, 'room':30, 'out':10}
+        self.temperature = {'sauna':90, 'room':30, 'out':10}
         
         # Butler for buss time table search
         self.butler = ["Next 102 -> 11:00 am", "Next 102 -> 12:00 am","Next 102 -> 13:00 am"]              
@@ -27,15 +27,19 @@ class House:
     
     
     
-    def getTemp(self):
+    def getTemperature(self, option):
         randomSauna = randint(30,80)
         randomRoom =  randint(0,26)
         randomOut = randint(-30,30)
-        
-        self.temp['sauna'] = randomSauna
-        self.temp['room'] = randomRoom
-        self.temp['out'] = randomOut
-        return self.temp
+        if (option == 0):
+            self.temperature['sauna'] = randomSauna
+            return self.temperature['sauna']
+        elif option == 1: 
+            self.temperature['room'] = randomRoom 
+            return self.temperature['room']  
+        else:
+            self.temperature['out'] = randomOut
+            return self.temperature['out']
     
     def getPeople(self):
         randomPeople = randint(1,3)
@@ -60,7 +64,7 @@ class House:
 account = Account('Teemu','salasana')
 house = House(account)
 print house.getPeople()
-print house.getTemp()
+print house.getTemperature(1)
 print house.getButler()
 print house.AccountInHouse()
 
