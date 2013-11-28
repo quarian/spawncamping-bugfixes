@@ -296,7 +296,7 @@ def read_input(name):
                 functions[selection]()
             return selection
         else:
-            print "No option " + selection + " available. Choose something else"
+            print "No option " + selection + " available. Choose on of the listed commands."
 
 options = generate_option_dictionary()
 functions = generate_function_dictionary()
