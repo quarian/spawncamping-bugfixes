@@ -158,85 +158,99 @@ def return_to_main_menu():
         up()
 
 def get_people():
+    global message
     people = house.getPeople()
     print ""
     print "Currently there are following people in the house:"
+    message = ""
     for person in people:
-        print person
+        message += person + "\n"
 
 def get_next_bus():
+    global message
     bus = house.getButler()
     print ""
-    print bus
+    message = bus
 
 def get_weather():
+    global message
     weather = house.getWeather()
     print ""
-    print weather
+    message = weather
 
 def tell_joke():
     print ""
-    print house.getJoke()
+    global message
+    message = house.getJoke()
 
 def check_fridge():
     print ""
+    global message
     thing = str(raw_input("What would you like to check in your fridge?\n"))
     if (house.flipCoin()):
-        print "There is " + thing + " still left."
+        message = "There is " + thing + " still left."
     else:
-        print "You are all out of " + thing + "."
+        message = "You are all out of " + thing + "."
 
 def shut_down_stove():
     print ""
+    global message
     if (house.getSwitch(2)):
         house.onOff(2)
-        print "Shut down stove"
+        message = "Shut down stove"
     else:
-        print "Stove already shut down"
+        message = "Stove already shut down"
 
 def lock_doors():
+    global message
     if (house.doorsLocked):
-        print "House is already locked"
+        message = "House is already locked"
     else:
-        print house.switchDoorState()
+        message = house.switchDoorState()
 
 def unlock_doors():
+    global message
     if (house.doorsLocked):
-        print house.switchDoorState()
+        message = house.switchDoorState()
     else:
-        print "Doors already unlocked"
+        message = "Doors already unlocked"
 
 def turn_stove_on():
     print ""
+    global message
     if (house.getSwitch(2)):
-        print "Stove already on."
+        message = "Stove already on."
     else:
         house.onOff(2)
-        print "Stove turned on"
+        message = "Stove turned on"
 
 def call_911():
     print ""
-    print "Notified the authorities."
+    global message
+    message = "Notified the authorities."
 
 def set_alarm():
+    global message
     if (house.alarm):
-        print "Alarm already on."
+        message = "Alarm already on."
     else:
         pwd = str(raw_input("Enter yout password\n"))
-        print house.switchAlarmState(pwd)
+        message = house.switchAlarmState(pwd)
 
 def disable_alarm():
+    global message
     if (house.alarm):
         pwd = str(raw_input("Enter yout password\n"))
-        print house.switchAlarmState(pwd)
+        message = house.switchAlarmState(pwd)
     else:
-        print "Alarm already off."
+        message = "Alarm already off."
 
 def alarm_state():
+    global message
     if (house.alarm):
-        print "Alarm is on."
+        message = "Alarm is on."
     else:
-        print "Alarm is off."
+        message = "Alarm is off."
 
 def print_breadcrumb(option_stack):
     print ""
@@ -245,10 +259,16 @@ def print_breadcrumb(option_stack):
         sys.stdout.write(option["name"])
         sys.stdout.write(" >> ")
     print ""
+    print ""
 
 def read_input(name):
+    global message
     while True:
         print ""
+        if (message != ""):
+            print message
+        print ""
+        message = ""
         selection = str(raw_input("Select your action\n")).upper()
         if (selection in options[name]):
             selection = options[name][selection]
@@ -263,6 +283,7 @@ options = generate_option_dictionary()
 functions = generate_function_dictionary()
 option_stack = []
 house = House(Account("Foo", "bar"))
+message = ""
 
 
 def main():
@@ -273,7 +294,6 @@ def main():
     print_separator()
     option_stack.append(options[current_option])
     print_breadcrumb(option_stack)
-    print_separator()
     print_options(options[current_option])
     while (True):
         current_option = read_input(option_stack[-1]["name"])
