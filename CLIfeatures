@@ -1,0 +1,40 @@
+appliance
+	-sauna etc.
+		on
+		off
+		cancel
+	-lights
+		on
+		off
+		cancel
+kitchen
+	is there ?
+	stove
+		on
+		off
+		cancel
+
+security
+	alarm
+		on -> password
+		off -> password
+	doors
+		lock
+		unlock
+
+temp
+	sauna
+	room
+	out
+
+butler
+	bus
+	weather
+	joke
+	
+B226
+10:15
+T1-salin edessa
+
+
+
