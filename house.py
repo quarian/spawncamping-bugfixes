@@ -28,7 +28,23 @@ class House:
     def getButler(self):
         randomInt = randint(0,2)
         return self.butler[randomInt]
+
+    def onOff(self, option):
+        if (option == 1):
+            self.sauna = not self.sauna;
+        if (option == 2):
+            self.stove = not self.stove
+        if (option == 3):
+            self.lights = not self.lights
     
+    def getSwitch(self, option):
+        if (option == 1):
+            return self.sauna;
+        if (option == 2):
+            return  self.stove
+        if (option == 3):
+            return self.lights
+        return False
     
     
     def getTemperature(self, option):
