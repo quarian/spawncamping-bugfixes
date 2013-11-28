@@ -1,0 +1,7 @@
+TODO:
+    -help command
+    -master status command
+    -command to list the tree of possible commands
+    -arrow keys to get previous commands?
+    -remianing features
+    -logging?
