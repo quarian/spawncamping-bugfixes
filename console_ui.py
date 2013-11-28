@@ -39,6 +39,9 @@ def generate_function_dictionary():
     functions["Set alarm"] = set_alarm
     functions["Disable alarm"] = disable_alarm
     functions["Alarm state"] = alarm_state
+    functions["Check Sauna temperature"] = sauna_temperature
+    functions["Check outside temperature"] = outside_temperature
+    functions["Check temperature of a chosen room"] = chosen_temperature
     functions["Call 911"] = call_911
     return functions
 
@@ -106,7 +109,7 @@ def security_options():
 def sauna_options():
     options = {}
     options["name"] = "Sauna"
-    options["1"] = "Get temperature"
+    options["1"] = "Check Sauna temperature"
     options["2"] = "Start heating"
     options["U"] = "Up"
     options["X"] = "Return to Main Menu"
@@ -251,6 +254,22 @@ def alarm_state():
         message = "Alarm is on."
     else:
         message = "Alarm is off."
+
+def sauna_temperature():
+    global message
+    temperature = house.getTemperature(0)
+    message = "Your sauna's temperature is " + str(temperature) + " degrees celsius."
+
+def outside_temperature():
+    global message
+    temperature = house.getTemperature(2)
+    message = "Outside temperature is " + str(temperature) + " degrees celsius."
+
+def chosen_temperature():
+    global message
+    temperature = house.getTemperature(0)
+    room = str(raw_input("Which room's temperature would you like to know?\n"))
+    message = room.title() + "'s temperature is " + str(temperature) + " degrees celsius."
 
 def print_breadcrumb(option_stack):
     print ""
