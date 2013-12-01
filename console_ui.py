@@ -6,6 +6,12 @@ import sys
 import time
 import getpass
 
+# This file contains a simple command line based user interface.
+# Obviously it's not a triumph of coding style, but functional
+# enough.
+
+# A few functions to print various messages
+
 def get_hello():
     print "Welcome to the Intelligent House Manager!"
     print "Use numeric keys to navigate"
@@ -22,6 +28,10 @@ def get_help():
     message += "Exit the aaplication with Q.\n"
     message += "Commands are not case sensitive."
 
+# This functions takes in a dictionary and prints it. Hopefully
+# keys and values are appropriately set (option shortcut in key,
+# option name in value).
+
 def print_options(options):
     for key, value in sorted(options.iteritems()):
         if (key != "name"):
@@ -29,6 +39,9 @@ def print_options(options):
 
 def print_separator():
     print 50 * "="
+
+# Define the function dictionary - this way we can deduce the
+# desired function based on the name of the given action.
 
 def generate_function_dictionary():
     functions = {}
@@ -65,6 +78,10 @@ def generate_function_dictionary():
     functions["House status"] = house_status
     return functions
 
+# Generate the option dictionary - which is a dictionary of dictionaries.
+# The entrys in the option dictionary specify the different dialogue options
+# throughout the program.
+
 def generate_option_dictionary():
     options = {}
     options["Main Menu"] = main_menu_options()
@@ -78,6 +95,8 @@ def generate_option_dictionary():
     options["Lights"] = light_options()
     options["Stove"] = stove_options()
     return options
+
+# Define all the option sets.
 
 def main_menu_options():
     options = {}
@@ -204,16 +223,25 @@ def butler_options():
     options["Q"] = "Quit"
     return options
 
+# Used to exit the program.
+
 def quit():
     print "Exiting. Bye bye!"
     exit(0)
 
+# Move up in the application hierarchy, which is equal to
+# popping the option stack (more on this later)
+
 def up():
     option_stack.pop()
+
+# Return to main menu (duh)
 
 def return_to_main_menu():
     while len(option_stack) > 1:
         up()
+
+# Wrappers for the house functions
 
 def get_people():
     global message
@@ -387,6 +415,8 @@ def kill_sauna():
     else:
         message = "Sauna already off."
 
+# Prints the current location in the application
+
 def print_breadcrumb(option_stack):
     print ""
     print "Current location in application:"
@@ -395,6 +425,8 @@ def print_breadcrumb(option_stack):
         sys.stdout.write(" >> ")
     print ""
     print ""
+
+# Do login - no actual checking or anything in this trivial example program.
 
 def login():
     global house
@@ -405,6 +437,8 @@ def login():
     house = House(Account(username, password))
 
 def print_all_options():
+    global message
+    message = "Possible options printed above the current location information."
     for key, value in options.iteritems():
         print "Option name: " + value["name"]
         print "Has options"
@@ -412,7 +446,8 @@ def print_all_options():
         print ""
 
 def house_status():
-    
+    global message
+    message = "House status printed above the current options."
     print "House status:"
     if (house.doorsLocked):
         print "House locked."
@@ -442,6 +477,10 @@ def house_status():
     else:
         print "Alarm off."
 
+# Reads user input and proceeds to handle the input appropriately. If the user chooses
+# another option set it will be displayed and if the user selects a functionality, the
+# desired function is executed.
+
 def read_input(name):
     global message
     while True:
@@ -460,31 +499,39 @@ def read_input(name):
         else:
             print "No option " + selection + " available. Choose one of the listed commands."
 
+# Kids, don't use global variables. But what is done is done.
+
 options = generate_option_dictionary()
 functions = generate_function_dictionary()
+# Option stack holds the dialogues that have been gone through to facilitate
+# navigation in the application.
 option_stack = []
 #house = House(Account("Foo", "bar"))
 message = ""
 
 
+# Main program is pretty much a loop asking for user input and managing
+# the option stack.
+
 def main():
     login()
-    house_status()
     current_option = "Main Menu"
     functions = generate_function_dictionary()
     print_separator()
     get_hello()
     print_separator()
+    house_status()
     option_stack.append(options[current_option])
     print_breadcrumb(option_stack)
     print_options(options[current_option])
     while (True):
         current_option = read_input(option_stack[-1]["name"])
+        # If selection is an option, show the new values that one could choose.
+        # If the selection is not an option, it is a function and it's executed
+        # - it has no effect on the option stack.
         if (current_option in options):
             option_stack.append(options[current_option])
         print_breadcrumb(option_stack)
         print_options(option_stack[-1])
 
 main()
-
-# Add status method
