@@ -28,9 +28,7 @@ def print_options(options):
             print "(" + str(key) + ") " + str(value)
 
 def print_separator():
-    print ""
     print 50 * "="
-    print ""
 
 def generate_function_dictionary():
     functions = {}
@@ -63,6 +61,8 @@ def generate_function_dictionary():
     functions["Sign out"] = sign_out
     functions["Start heating"] = start_heating
     functions["Power down sauna"] = kill_sauna
+    functions["Show all options"] = print_all_options
+    functions["House status"] = house_status
     return functions
 
 def generate_option_dictionary():
@@ -91,6 +91,8 @@ def main_menu_options():
     options["7"] = "Check Temperature"
     options["Q"] = "Quit"
     options["H"] = "Help"
+    options["A"] = "Show all options"
+    options["S"] = "House status"
     return options
 
 def applicance_options():
@@ -289,13 +291,13 @@ def set_alarm():
     if (house.alarm):
         message = "Alarm already on."
     else:
-        pwd = str(raw_input("Enter your password\n"))
+        pwd = str(getpass.getpass("Enter your password\n"))
         message = house.switchAlarmState(pwd)
 
 def disable_alarm():
     global message
     if (house.alarm):
-        pwd = str(raw_input("Enter yout password\n"))
+        pwd = str(getpass.getpass("Enter yout password\n"))
         message = house.switchAlarmState(pwd)
     else:
         message = "Alarm already off."
@@ -402,6 +404,44 @@ def login():
     password = str(getpass.getpass("Password:\n"))
     house = House(Account(username, password))
 
+def print_all_options():
+    for key, value in options.iteritems():
+        print "Option name: " + value["name"]
+        print "Has options"
+        print_options(value)
+        print ""
+
+def house_status():
+    
+    print "House status:"
+    if (house.doorsLocked):
+        print "House locked."
+    else:
+        print "House not locked."
+    if (house.sauna):
+        print "Sauna on."
+        print "Sauna temperature " + str(house.getTemperature(0)) + "."
+    else:
+        print "Sauna off."
+    if (house.stove):
+        print "Stove on."
+    else:
+        print "Stove off."
+    if (house.lights):
+        print "Lights on."
+    else:
+        print "Lights off."
+    print "Outside temperature " + str(house.getTemperature(2)) + "."
+    sys.stdout.write("People in the house:")
+    people = house.getPeople()
+    for p in people:
+        sys.stdout.write(" " + p);
+    sys.stdout.write(".\n")
+    if (house.alarm):
+        print "Alarm on."
+    else:
+        print "Alarm off."
+
 def read_input(name):
     global message
     while True:
@@ -418,7 +458,7 @@ def read_input(name):
                 functions[selection]()
             return selection
         else:
-            print "No option " + selection + " available. Choose on of the listed commands."
+            print "No option " + selection + " available. Choose one of the listed commands."
 
 options = generate_option_dictionary()
 functions = generate_function_dictionary()
@@ -429,6 +469,7 @@ message = ""
 
 def main():
     login()
+    house_status()
     current_option = "Main Menu"
     functions = generate_function_dictionary()
     print_separator()

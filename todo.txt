@@ -1,7 +1,7 @@
 TODO:
     -help command (DONE)
     -master status command
-    -command to list the tree of possible commands
+    -command to list the tree of possible commands (DONE)
     -arrow keys to get previous commands?
-    -remianing features
-    -logging?
+    -remianing features (DONE)
+    -logging (DONE)
