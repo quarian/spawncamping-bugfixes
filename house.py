@@ -13,7 +13,7 @@ class House:
         self.lights = False
       
         #who is at home?
-        self.people = ['Matti','Tappo','Kalle']  
+        self.people = ['Matti','Teppo','Kalle']  
         
         #temperature monitoring     
         self.temperature = {'sauna':90, 'room':30, 'out':10}

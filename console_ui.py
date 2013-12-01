@@ -4,6 +4,7 @@ from house import House
 from account import Account
 import sys
 import time
+import getpass
 
 def get_hello():
     print "Welcome to the Intelligent House Manager!"
@@ -11,9 +12,18 @@ def get_hello():
     print "You can return to main meny by pressing X"
     print "Jump up one hierachy level with U"
     print "Exit the application with Q"
+    print "Commands are not case sensitive."
+
+def get_help():
+    global message
+    message = "Numeric keys to navigate.\n"
+    message += "X for main menu\n"
+    message += "U to go up a hierarchy level.\n"
+    message += "Exit the aaplication with Q.\n"
+    message += "Commands are not case sensitive."
 
 def print_options(options):
-    for key, value in options.iteritems():
+    for key, value in sorted(options.iteritems()):
         if (key != "name"):
             print "(" + str(key) + ") " + str(value)
 
@@ -38,11 +48,21 @@ def generate_function_dictionary():
     functions["Unlock doors"] = unlock_doors
     functions["Set alarm"] = set_alarm
     functions["Disable alarm"] = disable_alarm
+    functions["Turn on lights"] = lights_on
+    functions["Turn off lights"] = lights_off
+    functions["Turn on stove"] = stove_on
+    functions["Turn off stove"] = stove_off
     functions["Alarm state"] = alarm_state
     functions["Check Sauna temperature"] = sauna_temperature
     functions["Check outside temperature"] = outside_temperature
     functions["Check temperature of a chosen room"] = chosen_temperature
     functions["Call 911"] = call_911
+    functions["Help"] = get_help
+    functions["Schelude"] = get_schelude
+    functions["Sign in"] = sign_in
+    functions["Sign out"] = sign_out
+    functions["Start heating"] = start_heating
+    functions["Power down sauna"] = kill_sauna
     return functions
 
 def generate_option_dictionary():
@@ -55,6 +75,8 @@ def generate_option_dictionary():
     options["Check Kitchen"] = kitchen_options()
     options["Check Temperature"] = temperature_options()
     options["Butler"] = butler_options()
+    options["Lights"] = light_options()
+    options["Stove"] = stove_options()
     return options
 
 def main_menu_options():
@@ -68,6 +90,7 @@ def main_menu_options():
     options["6"] = "Butler"
     options["7"] = "Check Temperature"
     options["Q"] = "Quit"
+    options["H"] = "Help"
     return options
 
 def applicance_options():
@@ -78,6 +101,7 @@ def applicance_options():
     options["3"] = "Lights"
     options["U"] = "Up"
     options["X"] = "Return to Main Menu"
+    options["H"] = "Help"
     options["Q"] = "Quit"
     return options
 
@@ -90,6 +114,7 @@ def people_interface():
     options["4"] = "Schelude"
     options["U"] = "Up"
     options["X"] = "Return to Main Menu"
+    options["H"] = "Help"
     options["Q"] = "Quit"
     return options
 
@@ -103,6 +128,7 @@ def security_options():
     options["5"] = "Alarm state"
     options["U"] = "Up"
     options["X"] = "Return to Main Menu"
+    options["H"] = "Help"
     options["Q"] = "Quit"
     return options
 
@@ -111,8 +137,10 @@ def sauna_options():
     options["name"] = "Sauna"
     options["1"] = "Check Sauna temperature"
     options["2"] = "Start heating"
+    options["3"] = "Power down sauna"
     options["U"] = "Up"
     options["X"] = "Return to Main Menu"
+    options["H"] = "Help"
     options["Q"] = "Quit"
     return options
 
@@ -120,10 +148,11 @@ def kitchen_options():
     options = {}
     options["name"] = "Check Kitchen"
     options["1"] = "Check fridge"
-    options["2"] = "Shut down stove"
-    options["3"] = "Turn Stove on"
+    options["3"] = "Turn off stove"
+    options["2"] = "Turn on stove"
     options["U"] = "Up"
     options["X"] = "Return to Main Menu"
+    options["H"] = "Help"
     options["Q"] = "Quit"
     return options
 
@@ -135,6 +164,29 @@ def temperature_options():
     options["3"] = "Check temperature of a chosen room"
     options["U"] = "Up"
     options["X"] = "Return to Main Menu"
+    options["H"] = "Help"
+    options["Q"] = "Quit"
+    return options
+
+def light_options():
+    options = {}
+    options["name"] = "Lights"
+    options["1"] = "Turn on lights"
+    options["2"] = "Turn off lights"
+    options["U"] = "Up"
+    options["X"] = "Return to Main Menu"
+    options["H"] = "Help"
+    options["Q"] = "Quit"
+    return options
+
+def stove_options():
+    options = {}
+    options["name"] = "Stove"
+    options["1"] = "Turn on stove"
+    options["2"] = "Turn off stove"
+    options["U"] = "Up"
+    options["X"] = "Return to Main Menu"
+    options["H"] = "Help"
     options["Q"] = "Quit"
     return options
 
@@ -146,6 +198,7 @@ def butler_options():
     options["3"] = "Tell a joke!"
     options["U"] = "Up"
     options["X"] = "Return to Main Menu"
+    options["H"] = "Help"
     options["Q"] = "Quit"
     return options
 
@@ -164,8 +217,7 @@ def get_people():
     global message
     people = house.getPeople()
     print ""
-    print "Currently there are following people in the house:"
-    message = ""
+    message = "Currently there are following people in the house:\n\n"
     for person in people:
         message += person + "\n"
 
@@ -237,7 +289,7 @@ def set_alarm():
     if (house.alarm):
         message = "Alarm already on."
     else:
-        pwd = str(raw_input("Enter yout password\n"))
+        pwd = str(raw_input("Enter your password\n"))
         message = house.switchAlarmState(pwd)
 
 def disable_alarm():
@@ -271,14 +323,84 @@ def chosen_temperature():
     room = str(raw_input("Which room's temperature would you like to know?\n"))
     message = room.title() + "'s temperature is " + str(temperature) + " degrees celsius."
 
+def lights_on():
+    global message
+    if (house.getSwitch(3)):
+        message = "Lights are already on."
+    else:
+        message = "Lights turned on."
+        house.onOff(3)
+
+def lights_off():
+    global message
+    if (not house.getSwitch(3)):
+        message = "Lights are already off."
+    else:
+        message = "Lights turned off."
+        house.onOff(3)
+
+def stove_on():
+    global message
+    if (house.getSwitch(2)):
+        message = "Stove is already on."
+    else:
+        message = "Stove turned on."
+        house.onOff(2)
+
+def stove_off():
+    global message
+    if (not house.getSwitch(2)):
+        message = "Stove is already off."
+    else:
+        message = "Stove turned off."
+        house.onOff(2)
+
+def get_schelude():
+    global message
+    message = 22 * "_" + "\n"
+    message += "People:\tMatti\tTeppo\n" 
+    message += "At:\tYoga\tMarket\n"
+    message += 22 * "-"
+
+def sign_in():
+    global message
+    message = house.account.name + " signed into the house."
+
+def sign_out():
+    global message
+    message = house.account.name + " signed out of the house."
+
+def start_heating():
+    global message
+    target_time = str(raw_input("When would you like to have your sauna ready?\n"))
+    message = "Your sauna will be ready at " + target_time + "."
+    if (not house.getSwitch(1)):
+        house.onOff(1)
+
+def kill_sauna():
+    global message
+    if (house.getSwitch(1)):
+        message = "Turned off sauna."
+        house.onOff(1)
+    else:
+        message = "Sauna already off."
+
 def print_breadcrumb(option_stack):
     print ""
-    print "Current location in application"
+    print "Current location in application:"
     for option in option_stack:
         sys.stdout.write(option["name"])
         sys.stdout.write(" >> ")
     print ""
     print ""
+
+def login():
+    global house
+    print "Log in to the smart house."
+    print "Note that password input is masked."
+    username = str(raw_input("Username:\n"))
+    password = str(getpass.getpass("Password:\n"))
+    house = House(Account(username, password))
 
 def read_input(name):
     global message
@@ -301,11 +423,12 @@ def read_input(name):
 options = generate_option_dictionary()
 functions = generate_function_dictionary()
 option_stack = []
-house = House(Account("Foo", "bar"))
+#house = House(Account("Foo", "bar"))
 message = ""
 
 
 def main():
+    login()
     current_option = "Main Menu"
     functions = generate_function_dictionary()
     print_separator()

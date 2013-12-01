@@ -1,5 +1,5 @@
 TODO:
-    -help command
+    -help command (DONE)
     -master status command
     -command to list the tree of possible commands
     -arrow keys to get previous commands?
